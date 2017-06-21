@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "vsmobile.vscode-react-native"
+    ]
+}
+/*
+"extensionDependencies": [] // Try this another time, maybe this can force the requirement of TSLint etc
+*/

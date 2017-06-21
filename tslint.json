@@ -1,0 +1,13 @@
+{
+    "extends": "tslint:recommended", 
+    "rules": {
+        "class-name": true, 
+        "interface-name": [ true, "always-prefix" ], 
+        "newline-before-return": true, 
+        "no-consecutive-blank-lines": true, 
+        "semicolon": [ true, "always" ], 
+        "return-undefined": true, 
+        "trailing-comma": [ true, { "multiline": "always", "singleline": "always" } ], 
+        "curly": [ true, "ignore-same-line" ]
+    }
+}
