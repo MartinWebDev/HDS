@@ -13,7 +13,7 @@ interface IProps {
 }
 
 export abstract class AttributeSelector<T> extends Component<IProps, T> {
-    constructor(props: IProps) {
+    constructor(props?: IProps) {
         super(props);
     }
 }

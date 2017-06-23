@@ -14,8 +14,12 @@ export const ServiceConfig = {
     // API for product details    
     GetProductDetails: "Products/GetProductById" as string,
     GetProductReviews: "Products/GetProductComments" as string,
+    GetAttributeAndValues: "Products/GetAttributeAndValues" as string,
 
     // API for favourites controller
     AddProductToFavourites: "Products/CollectProduct" as string,
-    RemoveProductFromFavourites: "Products/CollectProduct" as string
+    RemoveProductFromFavourites: "Products/CollectProduct" as string,
+
+    // API for shopping cart services
+    AddProductToCart: "ShoppingCartItems/CreateShoppingCartItem" as string
 }

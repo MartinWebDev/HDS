@@ -21,25 +21,38 @@ import {
     IProductAttributeMappingsValue
 } from '../../../Services/ClientData/ProductAttributeMappings';
 
-interface IProps {
-    attribute: IProductAttributeMappings;
-    parentUpdateCallback: (attrId: number, valueId: number, removeId: number) => void;
-}
-
 interface IState {
     activeValueIndex: number;
 }
 
+/**
+ * When you want to write a new Component for a different type of it is best to extend the abstract class
+ * AttributeSelector.tsx as this defines a fixed "IProps" interface to ensure all
+ * components will be consistent. The IState interface can be written in any way you
+ * want however.
+ * When extending the abstract class AttributeSelector<T> T refers to the IState interface
+ * so when you define your state interface, be sure to pass that in as value T
+ */
 export class DropdownList extends AttributeSelector<IState> { //Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = { activeValueIndex: null };
     }
 
     /**
      * In this example, the components renders a "dropdownlist" style selector.
-     * On the screen this is rendered as clickable boxes but the key is that only one can be selected at once. 
+     * On the screen this is rendered as clickable boxes but the key is that only one can be selected at once.
+     * IMPORTANT: When you write a new component, the most important thing here is to make sure your new component
+     *            uses the callback correctly.
+     *            The callback function requires 3 parameters.
+     *                attrId - This is ID of the attribute itself that we are goiing to change
+     *                valueId - If you want to select an option, pass in the ID of the attribute value here
+     *                removeId - If you want to unselect an option, pass in the ID of the attribute value here
+     *            Both the valueId, and removeId can be passed null. Passing null means this action would not be taken
+     * As long as you use this function correctly as described above the rest of this component can be 100% up to
+     * the developer. Doing it this way will ensure that any attribute selector type will always update the price
+     * adjustment correctly, so be sure to follow this same structure carefully to avoid bugs in future.
      * @param valueId The ID of the attribute value which has been selected
      */
     updateActiveIndex(valueId: number) {
@@ -77,7 +90,7 @@ export class DropdownList extends AttributeSelector<IState> { //Component<IProps
                         this.updateActiveIndex(value.id);
                     }
                 }>
-                    <Text>{value.name} ({value.price_adjustment.toFixed(2)})</Text>
+                    <Text>{value.name}</Text>
 
                     <View style={styles.tick}>
                         {
@@ -122,6 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 8,
         marginHorizontal: 8,
+        marginTop: 4,
         width: (Dimensions.get("window").width / 3) - (32),
         alignItems: "center",
         position: "relative"

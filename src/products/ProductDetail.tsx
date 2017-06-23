@@ -34,10 +34,22 @@ import { ProductDescriptionImage } from './ProductDetail/ProductDescriptionImage
 import { IProduct, Product } from '../Services/ClientData/Product';
 import { IReview, Review } from '../Services/ClientData/Review';
 
+import {
+    IProductAttributeMappingsValue,
+    IProductAttributeMappings
+} from '../Services/ClientData/ProductAttributeMappings';
+
+import { ISelectedProductAttributes } from '../Services/Interfaces/ISelectedProductAttributes';
+
+// Services
+import { IShoppingCartService, ShoppingCartService } from '../Services/ShoppingCartService';
+import { ICustomerService, CustomerService } from '../Services/CustomerService';
+
 // Component setup
 interface Props {
     navigation: NavigationScreenProp<any, any>;
     productDetails: IProduct;
+    productAttributeMappings: IProductAttributeMappings[];
     productReviews: IReview[];
     onToggleFavourite: () => void;
 }
@@ -45,6 +57,7 @@ interface Props {
 interface State {
     descriptionSectionWidth: number;
     purchaseModalVisible: boolean;
+    buyNow: boolean;
 }
 
 // Component create
@@ -56,7 +69,8 @@ export class ProductDetail extends Component<Props, State> {
 
         this.state = {
             descriptionSectionWidth: width,
-            purchaseModalVisible: false
+            purchaseModalVisible: false,
+            buyNow: false
         };
     }
 
@@ -68,10 +82,41 @@ export class ProductDetail extends Component<Props, State> {
         this.setState({ purchaseModalVisible: false });
     }
 
-    render(): JSX.Element {
-        //console.warn(JSON.stringify(this.props.productDetails)); // TEMP
+    handlePurchase(productId: number,
+        quantity: number,
+        activeAttributes: ISelectedProductAttributes[],
+        productAttributes: IProductAttributeMappings[],
+        callback: () => void
+    ): void {
+        let custService: ICustomerService = new CustomerService();
 
+        // Firstly we need the customer ID, then what that promise returns we can continue
+        custService.GetCustomerId().then((custId: number) => {
+            // Create the object for the cart service here so that if the above fails we save a tiny bit of time. 
+            let cartService: IShoppingCartService = new ShoppingCartService();
+
+            cartService.addProductToCart(
+                this.props.productDetails.Id,
+                custId,
+                quantity,
+                activeAttributes,
+                productAttributes,
+                this.state.buyNow
+            ).then((success) => {
+                // Once the cart service has finished, we can fire the callback
+                if (success) {
+                    callback();
+                }
+                else {
+                    alert("Oh shit!");
+                }
+            });
+        });
+    }
+
+    render(): JSX.Element {
         let p: IProduct = this.props.productDetails;
+        let attr: IProductAttributeMappings[] = this.props.productAttributeMappings || [];
 
         let r: JSX.Element[] = this.props.productReviews.map((review, index) => {
             return (
@@ -123,11 +168,13 @@ export class ProductDetail extends Component<Props, State> {
                     onRequestClose={() => { console.log("Modal closed"); }}
                 >
                     <PuchaseProductModal
+                        productId={p.Id}
                         productName={p.Name}
                         imgUri={p.ImgUrl}
-                        productAttributes={p.ProductAttributeMappings}
+                        productAttributes={attr}
                         unitPrice={p.Price}
                         close={this.dismissPurchaseModal.bind(this)}
+                        purchase={this.handlePurchase.bind(this)}
                     />
                 </Modal>
 
@@ -251,9 +298,6 @@ export class ProductDetail extends Component<Props, State> {
                             </TouchableOpacity>
                         </View>
                     </ScreenSection>
-
-                    {/*TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP*/}
-                    <Text>{JSON.stringify(this.props.productDetails)}</Text>
                 </ScreenView>
 
                 {/* Bottom controls - static on page */}
@@ -305,7 +349,7 @@ export class ProductDetail extends Component<Props, State> {
                     <View style={{ flex: 1, flexDirection: "row" }}>
                         <TouchableOpacity style={styles.addToCart} onPress={
                             () => {
-                                this.setState({ purchaseModalVisible: true });
+                                this.setState({ purchaseModalVisible: true, buyNow: false });
                             }
                         }>
                             <View>
@@ -315,7 +359,7 @@ export class ProductDetail extends Component<Props, State> {
 
                         <TouchableOpacity style={styles.buyNow} onPress={
                             () => {
-                                this.setState({ purchaseModalVisible: true });
+                                this.setState({ purchaseModalVisible: true, buyNow: true });
                             }
                         }>
                             <View>

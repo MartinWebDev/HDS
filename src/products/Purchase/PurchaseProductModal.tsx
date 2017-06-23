@@ -20,24 +20,28 @@ import {
 
 import { ProductAttributeFactory } from './ProductAttributeSelector';
 
-interface ActiveAttributes {
-    attributeIndex: number;
-    attributeValueIndexes: number[];
-}
+import { ISelectedProductAttributes } from '../../Services/Interfaces/ISelectedProductAttributes';
 
 interface IProps {
+    productId: number;
     productName: string;
     imgUri: string;
     productAttributes: IProductAttributeMappings[];
     unitPrice: number;
     close: () => void;
+    purchase: (productId: number,
+        quantity: number,
+        activeAttributes: ISelectedProductAttributes[],
+        productAttributes: IProductAttributeMappings[],
+        callback: () => void
+    ) => void;
 }
 
 interface IState {
     slideUpDownAnimation: Animated.Value;
     quantity: number;
     productAttributes: IProductAttributeMappings[];
-    activeAttributes: ActiveAttributes[];
+    activeAttributes: ISelectedProductAttributes[];
 }
 
 export class PuchaseProductModal extends Component<IProps, IState> {
@@ -207,7 +211,7 @@ export class PuchaseProductModal extends Component<IProps, IState> {
                                 newActive.push({
                                     attributeIndex: outerIndex,
                                     attributeValueIndexes: []
-                                } as ActiveAttributes);
+                                } as ISelectedProductAttributes);
                             }
 
                             // Insert new value
@@ -229,6 +233,9 @@ export class PuchaseProductModal extends Component<IProps, IState> {
         });
     }
 
+    /**
+     * Close modal handler, use this to close the modal because this fires off the closing animation too.
+     */
     closeModal() {
         Animated.timing(
             this.state.slideUpDownAnimation,
@@ -239,6 +246,12 @@ export class PuchaseProductModal extends Component<IProps, IState> {
         ).start(this.props.close.bind(this));
     }
 
+    /**
+     * Takes in an original unit price for a product, then loops through all active attributes,
+     * finds the index of each one, then finds the price adjustment value, add them all to the unit price
+     * then returns the final adjusted unit price. 
+     * @param unitPrice Started unit price of a single item. Does not include quantity.
+     */
     calculateAdjustedPrice(unitPrice: number): number {
         var adjustedPrice: number = unitPrice;
         var activeAttr = this.state.activeAttributes;
@@ -296,7 +309,6 @@ export class PuchaseProductModal extends Component<IProps, IState> {
                                 <Text style={styles.adjustedUnitPrice}>
                                     {
                                         `${yuanSymbol}${adjustedUnitPrice.toFixed(2)}`
-                                        /* TODO!!!! Change to include adjustments!! */
                                     }
                                 </Text>
                             </View>
@@ -353,7 +365,14 @@ export class PuchaseProductModal extends Component<IProps, IState> {
 
                         <View key="PurchaseButton" style={styles.purchaseButtonArea}>
                             <TouchableOpacity style={styles.purchaseButton} onPress={() => {
-                                alert("!BUY ME!");
+                                this.props.purchase(
+                                    this.props.productId,
+                                    this.state.quantity,
+                                    this.state.activeAttributes,
+                                    this.state.productAttributes,
+                                    () => {
+                                        this.closeModal();
+                                    });
                             }}>
                                 <View>
                                     <Text style={styles.purchaseButtonText}>确定</Text>

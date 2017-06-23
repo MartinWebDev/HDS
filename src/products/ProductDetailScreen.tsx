@@ -27,6 +27,11 @@ import { IProduct, Product } from '../Services/ClientData/Product';
 import { IProductService, ProductService } from '../Services/ProductService';
 import { IReview, Review } from '../Services/ClientData/Review';
 
+import {
+    IProductAttributeMappingsValue,
+    IProductAttributeMappings
+} from '../Services/ClientData/ProductAttributeMappings';
+
 // Component setup
 interface Props {
     navigation: NavigationScreenProp<any, any>;
@@ -36,6 +41,7 @@ interface State {
     productId: number;
     productDetails: IProduct;
     productReviews: IReview[];
+    productAttributes: IProductAttributeMappings[];
 }
 
 // Component create
@@ -56,7 +62,8 @@ export class ProductDetailScreen extends Component<Props, State> {
         this.state = {
             productDetails: null,
             productId: null,
-            productReviews: []
+            productReviews: [],
+            productAttributes: []
         };
     }
 
@@ -84,6 +91,12 @@ export class ProductDetailScreen extends Component<Props, State> {
                     // Update title after we have the details
                     setParams({
                         title: response.Name
+                    });
+                });
+
+                productService.GetProductAttributes(productId).then((response) => {
+                    this.setState({
+                        productAttributes: response
                     });
                 });
             })
@@ -131,6 +144,7 @@ export class ProductDetailScreen extends Component<Props, State> {
                             navigation={this.props.navigation}
                             productDetails={this.state.productDetails}
                             productReviews={this.state.productReviews}
+                            productAttributeMappings={this.state.productAttributes}
                             onToggleFavourite={this.handleToggleFavourite.bind(this)}
                         /> :
                         null

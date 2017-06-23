@@ -11,7 +11,7 @@ export interface IServiceCall {
     WithMethod(method: "POST" | "GET" | "DELETE" | "PUT"): IServiceCall;
     WithUri(uri: string): IServiceCall;
     WithHeaders(headers: any): IServiceCall;
-    WithBody(body: any): IServiceCall;
+    WithBody(body: {}): IServiceCall;
     Fetch(): Promise<Response>;
 }
 
@@ -39,11 +39,11 @@ export class ServiceCall implements IServiceCall {
     Headers: any;
     Body: any;
 
-    constructor () {
+    constructor() {
         this.Method = "POST";
 
         this.Headers = {
-            "Accept": "application/json", 
+            "Accept": "application/json",
             "Content-Type": "application/json"
         };
     }
@@ -77,9 +77,9 @@ export class ServiceCall implements IServiceCall {
 
     Fetch(): Promise<Response> {
         return fetch(this.Uri, {
-            method: this.Method, 
+            method: this.Method,
             mode: "cors",
-            headers: this.Headers, 
+            headers: this.Headers,
             body: (typeof this.Body !== "undefined") ? JSON.stringify(this.Body) : null
         });
     };

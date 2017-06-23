@@ -3,6 +3,7 @@ import { IProduct, Product } from './ClientData/Product';
 import { IHotProductSummary, HotProductSummary } from './ClientData/HotProductSummary';
 import { IFashionProductSummary, FashionProductSummary } from './ClientData/FashionProductSummary';
 import { IReview, Review } from './ClientData/Review';
+import { IProductAttributeMappings } from './ClientData/ProductAttributeMappings';
 
 import { ServiceConfig } from './Config/ServiceConfig';
 
@@ -11,6 +12,7 @@ export interface IProductService {
     GetHotProducts(): Promise<IHotProductSummary[]>;
     GetFashionProducts(): Promise<IFashionProductSummary[]>;
     GetProductDetails(productId: number, customerId: number): Promise<IProduct>;
+    GetProductAttributes(productId: number): Promise<IProductAttributeMappings[]>;
     GetProductReviews(productId: number, rating: number, pageIndex: number, pageSize: number): Promise<IReview[]>;
 }
 
@@ -81,6 +83,21 @@ export class ProductService implements IProductService {
             .WithBody({
                 Id: productId,
                 CustomerId: customerId
+            })
+            .Fetch();
+
+        let resultJson = await result.json();
+
+        return resultJson.data;
+    }
+
+    async GetProductAttributes(productId: number): Promise<IProductAttributeMappings[]> {
+        let service: IServiceCall = new ServiceCall();
+
+        let result = await service.WithUri(ServiceConfig.GetAttributeAndValues)
+            .WithMethod("POST")
+            .WithBody({
+                Id: productId
             })
             .Fetch();
 
