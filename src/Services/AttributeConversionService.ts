@@ -26,6 +26,23 @@ export class AttributeConversionService {
 
         return outputString;
     }
+
+    static RemoveHtmlTags(inputString: string): string {
+        var output: string = inputString;
+
+        let replaceThis: string[] = ["</span><span"];
+        let withThis: string[] = ["</span>\n<span"];
+
+        let htmlRegex = /<[^>]*>/g;
+
+        for (var i = 0; i < replaceThis.length; i++) {
+            output = output.replace(replaceThis[i], withThis[i]);
+        }
+
+        output = output.replace(htmlRegex, "");
+
+        return output;
+    }
 }
 
 

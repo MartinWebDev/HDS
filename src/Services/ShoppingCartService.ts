@@ -5,13 +5,15 @@ import { AttributeConversionService } from './AttributeConversionService';
 
 import { ISelectedProductAttributes } from './Interfaces/ISelectedProductAttributes';
 import { IProductAttributeMappings, IProductAttributeMappingsValue } from './ClientData/ProductAttributeMappings';
+import { IShoppingCartVendor, IShoppingCartItem } from './ClientData/ShoppingCart';
 
 export interface IShoppingCartService {
-    addProductToCart(pId: number, cId: number, qty: number, activeAttr: ISelectedProductAttributes[], pAttr: IProductAttributeMappings[], buy: boolean): Promise<boolean>;
+    AddProductToCart(pId: number, cId: number, qty: number, activeAttr: ISelectedProductAttributes[], pAttr: IProductAttributeMappings[], buy: boolean): Promise<boolean>;
+    GetShoppingCartItems(cId: number): Promise<IShoppingCartVendor[]>;
 }
 
 export class ShoppingCartService implements IShoppingCartService {
-    async addProductToCart(pId: number, cId: number, qty: number, activeAttr: ISelectedProductAttributes[], pAttr: IProductAttributeMappings[], buy: boolean): Promise<boolean> {
+    async AddProductToCart(pId: number, cId: number, qty: number, activeAttr: ISelectedProductAttributes[], pAttr: IProductAttributeMappings[], buy: boolean): Promise<boolean> {
         let attr: string;
 
         // Convert selected attributes list to what the server expects.
@@ -41,5 +43,21 @@ export class ShoppingCartService implements IShoppingCartService {
         else {
             return false;
         }
+    }
+
+    async GetShoppingCartItems(cId: number): Promise<IShoppingCartVendor[]> {
+        var service: IServiceCall = new ServiceCall();
+
+        let result = await service.WithUri(ServiceConfig.GetShoppingCartItems)
+            .WithMethod("POST")
+            .WithBody({
+                CustomerId: cId,
+                UserId: cId
+            })
+            .Fetch();
+
+        let resultJson = await result.json();
+
+        return resultJson.data;
     }
 }

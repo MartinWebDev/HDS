@@ -18,9 +18,7 @@ import {
     IProductAttributeMappings
 } from '../../Services/ClientData/ProductAttributeMappings';
 
-// Child Components
 import { ProductAttributeFactory } from './ProductAttributeSelector';
-import { QuantitySelector } from '../../GlobalComponents/QuantitySelector';
 
 import { ISelectedProductAttributes } from '../../Services/Interfaces/ISelectedProductAttributes';
 
@@ -300,10 +298,6 @@ export class PuchaseProductModal extends Component<IProps, IState> {
         return enabled;
     }
 
-    handleQuantityChange(qty: number): void {
-        this.setState({ quantity: this.state.quantity + qty });
-    }
-
     render(): JSX.Element {
         let { slideUpDownAnimation } = this.state;
         const yuanSymbol = "¥";
@@ -366,11 +360,32 @@ export class PuchaseProductModal extends Component<IProps, IState> {
                         </View>
 
                         <View key="QuantityTotalPrice" style={styles.quantityTotalPrice}>
-                            <QuantitySelector
-                                quantity={this.state.quantity}
-                                size="small"
-                                quantityChange={this.handleQuantityChange.bind(this)}
-                            />
+                            <View key="QuantitySelector" style={styles.quantitySection}>
+                                <Text>数量</Text>
+
+                                <View style={quantityStyles.container}>
+                                    <TouchableOpacity style={quantityStyles.down} onPress={
+                                        () => {
+                                            if (this.state.quantity > 1)
+                                                this.setState({ quantity: this.state.quantity - 1 });
+                                        }
+                                    }>
+                                        <Text style={quantityStyles.downText}>-</Text>
+                                    </TouchableOpacity>
+
+                                    <View style={quantityStyles.quantity}>
+                                        <Text style={quantityStyles.quantityText}>{this.state.quantity}</Text>
+                                    </View>
+
+                                    <TouchableOpacity style={quantityStyles.up} onPress={
+                                        () => {
+                                            this.setState({ quantity: this.state.quantity + 1 });
+                                        }
+                                    }>
+                                        <Text style={quantityStyles.upText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
 
                             <View style={styles.totalPriceSection}>
                                 <Text style={styles.totalPrice}>{`${yuanSymbol}${totalPrice.toFixed(2)}`}</Text>
@@ -437,6 +452,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         marginBottom: 8
     } as ViewStyle,
+    quantitySection: {} as ViewStyle,
     totalPriceSection: {
         justifyContent: "flex-end"
     } as ViewStyle,
@@ -462,5 +478,42 @@ const styles = StyleSheet.create({
     } as ViewStyle,
     purchaseButtonText: {
         color: "#FFF"
+    } as TextStyle
+});
+
+const quantityStyles = StyleSheet.create({
+    container: {
+        flexDirection: "row"
+    } as ViewStyle,
+    down: {
+        borderWidth: 1,
+        borderColor: "#CCC",
+        width: PixelRatio.getPixelSizeForLayoutSize(12)
+    } as ViewStyle,
+    quantity: {
+        borderTopWidth: 1,
+        borderTopColor: "#CCC",
+        borderBottomWidth: 1,
+        borderBottomColor: "#CCC",
+        width: PixelRatio.getPixelSizeForLayoutSize(20)
+    } as ViewStyle,
+    up: {
+        borderWidth: 1,
+        borderColor: "#CCC",
+        width: PixelRatio.getPixelSizeForLayoutSize(12)
+    } as ViewStyle,
+    downText: {
+        fontSize: PixelRatio.getPixelSizeForLayoutSize(8),
+        color: "#ff0006",
+        textAlign: "center"
+    } as TextStyle,
+    quantityText: {
+        fontSize: PixelRatio.getPixelSizeForLayoutSize(8),
+        textAlign: "center"
+    } as TextStyle,
+    upText: {
+        fontSize: PixelRatio.getPixelSizeForLayoutSize(8),
+        color: "#ff0006",
+        textAlign: "center"
     } as TextStyle
 });

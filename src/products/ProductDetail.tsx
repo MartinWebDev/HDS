@@ -95,7 +95,7 @@ export class ProductDetail extends Component<Props, State> {
             // Create the object for the cart service here so that if the above fails we save a tiny bit of time. 
             let cartService: IShoppingCartService = new ShoppingCartService();
 
-            cartService.addProductToCart(
+            cartService.AddProductToCart(
                 this.props.productDetails.Id,
                 custId,
                 quantity,

@@ -88,7 +88,8 @@ export class HomeTab extends Component<Props, State> {
 
     componentDidMount() {
         // TEMP navigate away!
-        this.props.navigation.navigate("Product", { productId: 6 });
+        //this.props.navigation.navigate("Product", { productId: 6 });
+        //this.props.navigation.navigate("Basket");
 
         // TEMP - Set temp data as state. Later change to API when it's available
         this.setState({

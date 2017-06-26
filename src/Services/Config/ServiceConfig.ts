@@ -21,5 +21,6 @@ export const ServiceConfig = {
     RemoveProductFromFavourites: "Products/CollectProduct" as string,
 
     // API for shopping cart services
-    AddProductToCart: "ShoppingCartItems/CreateShoppingCartItem" as string
+    AddProductToCart: "ShoppingCartItems/CreateShoppingCartItem" as string,
+    GetShoppingCartItems: "ShoppingCartItems/GetShoppingCartItems" as string
 }
