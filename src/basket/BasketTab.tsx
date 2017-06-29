@@ -67,10 +67,32 @@ export class BasketTab extends Component<IProps, IState> {
         });
     }
 
+    handleUpdateQuantity(vendorId: number, cartItemId: number, qty: number): void {
+        //console.warn(`Handle Quantity. Vendor: ${vendorId} - Cart Item: ${cartItemId} - Qty: ${qty}`);
+        // Make copy of state array, find item in array, update quantity, save state. 
+        var cart = this.state.cart;
+        let vendorIndex = cart.map((c) => { return c.VendorId; }).indexOf(vendorId);
+
+        if (vendorIndex != -1) {
+            let itemIndex = cart[vendorIndex].CarItems.map((c) => { return c.Id; }).indexOf(cartItemId);
+
+            if (itemIndex != -1) {
+                cart[vendorIndex].CarItems[itemIndex].Quantity += qty;
+
+                // TODO!!!!! Send request to cart API to update shopping cart!
+                this.setState({ cart: cart });
+            }
+        }
+    }
+
     render(): JSX.Element {
         return (
             <View style={{ flex: 1 }}>
-                <BasketDetails navigation={this.props.navigation} cart={this.state.cart} />
+                <BasketDetails
+                    navigation={this.props.navigation}
+                    cart={this.state.cart}
+                    updateQuantity={this.handleUpdateQuantity.bind(this)}
+                />
             </View>
         );
     }

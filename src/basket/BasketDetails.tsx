@@ -16,20 +16,25 @@ import { BasketEmpty } from './BasketEmpty';
 // Data
 import { IShoppingCartVendor, IShoppingCartItem } from '../Services/ClientData/ShoppingCart';
 
-interface State { }
-
-interface Props {
+interface IProps {
     navigation: NavigationScreenProp<any, any>;
     cart: IShoppingCartVendor[];
+    updateQuantity: (vendorId: number, cartItemId: number, qty: number) => void;
 }
 
-export class BasketDetails extends Component<Props, State> {
+interface IState { }
+
+export class BasketDetails extends Component<IProps, IState> {
     render(): JSX.Element {
         return (
             <View style={{ flex: 1 }}>
                 {
                     this.props.cart.length > 0 ?
-                        <BasketView navigation={this.props.navigation} cart={this.props.cart} /> :
+                        <BasketView
+                            navigation={this.props.navigation}
+                            cart={this.props.cart}
+                            updateQuantity={this.props.updateQuantity}
+                        /> :
                         <BasketEmpty />
                 }
             </View>

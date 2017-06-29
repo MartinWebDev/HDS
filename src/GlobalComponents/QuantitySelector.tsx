@@ -42,22 +42,22 @@ export class QuantitySelector extends Component<IProps, IState> {
 
         let sizeStyles = StyleSheet.create({
             down: {
-                width: PixelRatio.getPixelSizeForLayoutSize(12 * sizeMultiplier)
+                width: PixelRatio.getPixelSizeForLayoutSize(10 * sizeMultiplier)
             } as ViewStyle,
             quantity: {
-                width: PixelRatio.getPixelSizeForLayoutSize(20 * sizeMultiplier)
+                width: PixelRatio.getPixelSizeForLayoutSize(18 * sizeMultiplier)
             } as ViewStyle,
             up: {
-                width: PixelRatio.getPixelSizeForLayoutSize(12 * sizeMultiplier)
+                width: PixelRatio.getPixelSizeForLayoutSize(10 * sizeMultiplier)
             } as ViewStyle,
             downText: {
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(8 * sizeMultiplier)
+                fontSize: PixelRatio.getPixelSizeForLayoutSize(6 * sizeMultiplier)
             } as TextStyle,
             quantityText: {
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(8 * sizeMultiplier)
+                fontSize: PixelRatio.getPixelSizeForLayoutSize(6 * sizeMultiplier)
             } as TextStyle,
             upText: {
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(8 * sizeMultiplier)
+                fontSize: PixelRatio.getPixelSizeForLayoutSize(6 * sizeMultiplier)
             } as TextStyle
         });
 
@@ -65,28 +65,32 @@ export class QuantitySelector extends Component<IProps, IState> {
             <View key="QuantitySelector">
                 <Text>数量</Text>
 
-                <View style={quantityStyles.container}>
-                    <TouchableOpacity style={[quantityStyles.down, sizeStyles.down]} onPress={
-                        () => {
-                            if (this.props.quantity > 1) {
-                                this.props.quantityChange(-1);
+                <View style={quantityStyles.outerWrapper}>
+                    <View style={quantityStyles.container}>
+                        <TouchableOpacity style={[quantityStyles.down, sizeStyles.down]} onPress={
+                            () => {
+                                if (this.props.quantity > 1) {
+                                    this.props.quantityChange(-1);
+                                }
                             }
-                        }
-                    }>
-                        <Text style={[quantityStyles.downText, sizeStyles.downText]}>-</Text>
-                    </TouchableOpacity>
+                        }>
+                            <Text style={[quantityStyles.downText, sizeStyles.downText]}>-</Text>
+                        </TouchableOpacity>
 
-                    <View style={[quantityStyles.quantity, sizeStyles.quantity]}>
-                        <Text style={[quantityStyles.quantityText, sizeStyles.quantityText]}>{this.props.quantity}</Text>
+                        <View style={[quantityStyles.quantity, sizeStyles.quantity]}>
+                            <Text style={[quantityStyles.quantityText, sizeStyles.quantityText]}>{this.props.quantity}</Text>
+                        </View>
+
+                        <TouchableOpacity style={[quantityStyles.up, sizeStyles.up]} onPress={
+                            () => {
+                                this.props.quantityChange(1);
+                            }
+                        }>
+                            <Text style={[quantityStyles.upText, sizeStyles.upText]}>+</Text>
+                        </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={[quantityStyles.up, sizeStyles.up]} onPress={
-                        () => {
-                            this.props.quantityChange(1);
-                        }
-                    }>
-                        <Text style={[quantityStyles.upText, sizeStyles.upText]}>+</Text>
-                    </TouchableOpacity>
+                    {this.props.children}
                 </View>
             </View>
         );
@@ -94,6 +98,9 @@ export class QuantitySelector extends Component<IProps, IState> {
 }
 
 const quantityStyles = StyleSheet.create({
+    outerWrapper: {
+        flexDirection: "row"
+    } as ViewStyle,
     container: {
         flexDirection: "row"
     } as ViewStyle,

@@ -30,10 +30,16 @@ export class AttributeConversionService {
     static RemoveHtmlTags(inputString: string): string {
         var output: string = inputString;
 
+        // List of things to find and replace. 
+        // For example, replace a close then open span with one that has a line feed in it to display better on screen.
         let replaceThis: string[] = ["</span><span"];
         let withThis: string[] = ["</span>\n<span"];
 
-        let htmlRegex = /<[^>]*>/g;
+        // Generic regex to remove ALL html tags
+        //let htmlRegex = /<[^>]*>/g;
+
+        // Specific regex to remove only these HTML tags
+        let htmlRegex = /<(\/)*(h1|h2|h3|h4|h5|h6|div|span|p|image)[^>]*>/g;
 
         for (var i = 0; i < replaceThis.length; i++) {
             output = output.replace(replaceThis[i], withThis[i]);

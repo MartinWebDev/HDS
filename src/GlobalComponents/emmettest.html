@@ -11,6 +11,9 @@
     <div>
         table#data>(thead.header>tr>td*5)+(tbody.body>tr*5>td*5)
     </div>
+    <div>
+        table>tr[ng-repeat="value in data.values"]>td{{value.}}*5
+    </div>
 </body>
 
 </html>
