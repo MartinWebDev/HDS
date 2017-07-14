@@ -3,7 +3,7 @@
  */
 export const ServiceConfig = {
     /** Root will be loaded directly into the service call, so only include the last URI part in your services! */
-    ApiRoot: "http://www.zrytech.com/NopShop/api/" as string,
+    ApiRoot: "http://WEBSITE_ROOT/api/" as string,
 
     // API for home and main tabs
     GetHotProductList: "PopularKillApi/GetPopularKillProducts" as string,
